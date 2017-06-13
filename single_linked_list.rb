@@ -1,3 +1,5 @@
+#http://matt.weppler.me/2013/08/14/implementing-a-linked-list-in-ruby.html
+
 class Node
   attr_accessor :node, :next
 
