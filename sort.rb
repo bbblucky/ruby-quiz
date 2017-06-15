@@ -70,6 +70,22 @@ def merge_sorted_array(left, right)
   sorted
 end
 
+def quick_sort(array, lower, upper)
+  return if lower >= upper
+  pivot = array[lower]
+  left, right = lower+1, upper
+  while left <= right
+    left += 1 while left <= right && array[left] < pivot
+    right -= 1 while left <= right && array[right] >= pivot
+    break if left > right
+    array[left], array[right] = array[right], array[left]
+  end
+  array[lower], array[right] = array[right], array[lower]
+  quick_sort(array, lower, right-1)
+  quick_sort(array, right+1, upper)
+  array
+end
+
 array = []
 10000.times do
   array << rand(10000)
@@ -80,3 +96,4 @@ puts "\n======"
 # output('selection'){selection_sort(array)}
 # output('insertion'){insertion_sort(array)}
 output('merge'){merge_sort(array)}
+output('quick'){quick_sort(array, 0, array.size-1)}
