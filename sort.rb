@@ -116,7 +116,6 @@ class HeapSort
       if l < len && nums[l] > nums[max_index]
         max_index = l
       end
-
       r = right(k)
       if r < len && nums[r] > nums[max_index]
         max_index = r
@@ -195,23 +194,47 @@ class HeapSort2
 
 end
 
+def bucket_sort(array)
+  return if array.empty?
+  min = array.min
+  max = array.max
+  bucket_size= (max/10-min/10+1).floor
+  bucket_count = ((max-min)/bucket_size).floor + 1
+  buckets = Array.new(bucket_count) { Array.new }
+
+  (0..array.size-1).each do |i|
+    buckets[((array[i]-min)/bucket_size).floor] << array[i]
+  end
+
+  array.clear
+
+  buckets.each do |bucket|
+    bucket.sort.each do |value|
+      array << value
+    end
+  end
+  array
+end
+
 
 array = []
-10000.times do
-  array << rand(10000)
+1000.times do
+  array << rand(10000) #/(rand(10)+1.0)
 end
 array.each {|n| print n, ' '}
 puts "\n======"
+output('default'){array.sort}
 # output('bubble'){bubble_sort(array)}
 # output('selection'){selection_sort(array)}
 # output('insertion'){insertion_sort(array)}
 # output('merge') {merge_sort(array)}
 # output('quick') {quick_sort(array, 0, array.size-1)}
-output('heap') {
-  heap = HeapSort.new
-  heap.heap_sort(array)
-}
-output('heap2') {
-  heap = HeapSort2.new(array)
-  heap.heap_sort
-}
+# output('heap') {
+#   heap = HeapSort.new
+#   heap.heap_sort(array)
+# }
+# output('heap2') {
+#   heap = HeapSort2.new(array)
+#   heap.heap_sort
+# }
+output('bucket') {bucket_sort(array)}
