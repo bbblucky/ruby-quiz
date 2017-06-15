@@ -1,10 +1,8 @@
-
-
 def output(method)
   t_start = Time.now
   sorted = yield
   puts method
-  sorted.each {|n| print n, ' ' }
+  sorted.each {|n| print n, ' '}
   puts "\n"
   puts Time.now - t_start
   puts "======"
@@ -75,8 +73,12 @@ def quick_sort(array, lower, upper)
   pivot = array[lower]
   left, right = lower+1, upper
   while left <= right
-    left += 1 while left <= right && array[left] < pivot
-    right -= 1 while left <= right && array[right] >= pivot
+    while left <= right && array[left] < pivot
+      left += 1
+    end
+    while left <= right && array[right] >= pivot
+      right -= 1
+    end
     break if left > right
     array[left], array[right] = array[right], array[left]
   end
@@ -86,14 +88,130 @@ def quick_sort(array, lower, upper)
   array
 end
 
+class HeapSort
+  def parent(i)
+    (i - 1) / 2
+  end
+
+  def left(i)
+    2 * i + 1
+  end
+
+  def right(i)
+    2 * i + 2
+  end
+
+  def build_max_heapify(nums, heap_size)
+    (heap_size/2).downto(0).each do |i|
+      max_heapify(nums, i, heap_size)
+    end
+    nums
+  end
+
+  def max_heapify(nums, k, len)
+    while k < len
+      max_index = k
+
+      l = left(k)
+      if l < len && nums[l] > nums[max_index]
+        max_index = l
+      end
+
+      r = right(k)
+      if r < len && nums[r] > nums[max_index]
+        max_index = r
+      end
+
+      break if k == max_index
+
+      nums[k], nums[max_index] = nums[max_index], nums[k]
+      k = max_index
+    end
+    nums
+  end
+
+  def heap_sort(nums)
+    len = nums.size
+    build_max_heapify(nums, len)
+    (len-1).downto(0).each do |i|
+      nums[0], nums[i] = nums[i], nums[0]
+      build_max_heapify(nums, i)
+    end
+    nums
+  end
+
+end
+
+class HeapSort2
+  attr_accessor :input
+
+  def initialize(arg)
+    @input=arg
+  end
+
+  def heap_sort
+    heapify
+    the_end=input.length-1
+    while the_end > 0
+      input[the_end], input[0]=input[0], input[the_end]
+      the_end-=1
+      shift_down(0, the_end)
+    end
+    input
+  end
+
+  def heapify
+    the_start=(input.length-2)/2
+
+    while the_start >=0
+      shift_down(the_start, input.length-1)
+      the_start-=1
+    end
+  end
+
+  def shift_down(the_start, the_end)
+    root=the_start
+    while root*2+1 <= the_end
+      child=root*2+1
+      swap=root
+
+      if input[swap] < input[child]
+        swap=child
+      end
+
+      if child+1 <= the_end && input[swap] < input[child+1]
+        swap=child+1
+      end
+
+      if swap!=root
+        input[root], input[swap]=input[swap], input[root]
+        root=swap
+      else
+        return
+      end
+
+    end
+  end
+
+end
+
+
 array = []
 10000.times do
   array << rand(10000)
 end
-array.each {|n| print n, ' ' }
+array.each {|n| print n, ' '}
 puts "\n======"
 # output('bubble'){bubble_sort(array)}
 # output('selection'){selection_sort(array)}
 # output('insertion'){insertion_sort(array)}
-output('merge'){merge_sort(array)}
-output('quick'){quick_sort(array, 0, array.size-1)}
+# output('merge') {merge_sort(array)}
+# output('quick') {quick_sort(array, 0, array.size-1)}
+output('heap') {
+  heap = HeapSort.new
+  heap.heap_sort(array)
+}
+output('heap2') {
+  heap = HeapSort2.new(array)
+  heap.heap_sort
+}
